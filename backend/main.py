@@ -396,6 +396,54 @@ async def summarize_chapter(request: SummaryRequest):
         logger.error(f"Error in summarize_chapter: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/summarize-document/")
+async def summarize_document(request: SummaryRequest):
+    """Summarize a stored document from Pinecone by document name."""
+    try:
+        document_name = request.document_name.strip() if request.document_name else None
+        topic = request.chapter_query.strip() if request.chapter_query else None
+
+        if not document_name:
+            raise HTTPException(status_code=400, detail="document_name is required.")
+
+        logger.info(f"Summarize document request — document: {document_name}, topic: {topic}")
+
+        embeddings_model = OpenAIEmbeddings(
+            model="text-embedding-3-small",
+            openai_api_key=os.getenv("OPENAI_API_KEY")
+        )
+        query = topic or document_name
+        query_embedding = embeddings_model.embed_query(query)
+
+        results = index.query(
+            vector=query_embedding,
+            top_k=3,
+            include_metadata=True,
+            filter={"file_name": document_name}
+        )
+
+        if not results["matches"]:
+            raise HTTPException(status_code=404, detail="No relevant content found.")
+
+        content = " ".join([res["metadata"]["text"] for res in results["matches"]])
+
+        if not content.strip():
+            raise HTTPException(status_code=404, detail="No content could be extracted.")
+
+        summary = await generate_chapter_summary(content, topic or document_name)
+
+        return {
+            "summary": summary,
+            "document": document_name,
+            "topic": topic
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in summarize_document: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/qa-pdf/")
 async def qa_pdf(model: QAModel):
     """Answer a question using Pinecone context and GPT-4o-mini."""

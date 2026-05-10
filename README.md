@@ -14,9 +14,10 @@ An AI-powered tutor for quantum computing built on a Retrieval-Augmented Generat
 
 ## 🌐 Live Demo
 
-**[https://quantum-rag-ai-tutor.vercel.app/](https://quantum-rag-ai-tutor.vercel.app/)**
+**Frontend:** [https://quantum-rag-ai-tutor.vercel.app](https://quantum-rag-ai-tutor.vercel.app)  
+**Backend API:** [https://quantum-rag-ai-tutor-production.up.railway.app/docs](https://quantum-rag-ai-tutor-production.up.railway.app/docs)
 
-> Note: AI features require the backend to be running. Full functionality coming soon.
+> Note: AI features require OpenAI credits to be available.
 
 ---
 
@@ -144,8 +145,10 @@ NEXT_PUBLIC_BACKEND_URL=
 | Data scraper | ✅ Complete |
 | FastAPI backend | ✅ Complete |
 | Frontend (Next.js + React) | ✅ Complete |
+| Backend deployment (Railway) | ✅ Complete |
+| Frontend deployment (Vercel) | ✅ Complete |
 | README | 🔄 In Progress |
-| Requirements.txt | 🔄 In Progress |
+| Requirements.txt | ✅ Complete |
 
 ---
 

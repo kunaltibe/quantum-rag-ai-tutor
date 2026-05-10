@@ -244,7 +244,7 @@ def safe_upsert(index, vectors, max_retries=5):
     retries = 0
     while retries < max_retries:
         try:
-            index.upsert(vectors)
+            index.upsert(vectors=vectors)
             logger.info(f"Successfully upserted {len(vectors)} vectors.")
             return
         except PineconeProtocolError as e:

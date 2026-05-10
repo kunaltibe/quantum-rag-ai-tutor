@@ -10,11 +10,8 @@ export const api = axios.create({
 })
 
 export interface Publication {
-  id?: string | number
-  name?: string
-  title?: string
-  filename?: string
-  [key: string]: unknown
+  file_name: string
+  document_title: string
 }
 
 export interface RelatedPaper {

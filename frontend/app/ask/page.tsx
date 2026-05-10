@@ -30,16 +30,11 @@ interface Message {
 }
 
 function getDocLabel(p: Publication): string {
-  return (
-    (p.title as string) ||
-    (p.name as string) ||
-    (p.filename as string) ||
-    String(p.id ?? "Document")
-  )
+  return p.document_title || p.file_name
 }
 
 function getDocId(p: Publication): string {
-  return String(p.id ?? p.name ?? p.title ?? p.filename ?? "")
+  return p.file_name
 }
 
 export default function AskPage() {

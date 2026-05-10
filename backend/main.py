@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from unstructured.partition.auto import partition
-from unstructured.partition.pdf import partition_pdf
 from unstructured.staging.base import convert_to_dict
 from pinecone import Pinecone, ServerlessSpec
 from openai import OpenAI
@@ -108,13 +107,22 @@ class SaveNoteModel(BaseModel):
 
 # Utility Functions
 def extract_content(file_path: str) -> list:
-    """Extract text content from PDF or other file types using Unstructured.io."""
+    """Extract text content from PDF or other file types."""
     try:
         if file_path.lower().endswith(".pdf"):
-            elements = partition_pdf(filename=file_path)
+            # Use pypdf for PDF extraction — no system library dependencies
+            from pypdf import PdfReader
+            reader = PdfReader(file_path)
+            elements = []
+            for page_num, page in enumerate(reader.pages):
+                text = page.extract_text()
+                if text and text.strip():
+                    elements.append({"text": text.strip(), "page": page_num + 1})
+            logger.info(f"Extracted {len(elements)} pages from PDF '{file_path}'.")
+            return elements
         else:
             elements = partition(filename=file_path)
-        return convert_to_dict(elements)
+            return convert_to_dict(elements)
     except Exception as e:
         logger.error(f"Failed to extract content from {file_path}: {e}")
         return []

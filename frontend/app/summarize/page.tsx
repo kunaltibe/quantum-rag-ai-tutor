@@ -127,6 +127,7 @@ export default function SummarizePage() {
         return
       }
       setFile(dropped)
+      setSummary(null)
     }
   }
 
@@ -176,7 +177,14 @@ export default function SummarizePage() {
         </div>
 
         {/* Tabs */}
-        <Tabs value={tab} onValueChange={setTab} className="w-full">
+        <Tabs
+          value={tab}
+          onValueChange={(value) => {
+            setTab(value)
+            setSummary(null)
+          }}
+          className="w-full"
+        >
           <TabsList className="bg-card border border-border p-1 h-auto">
             <TabsTrigger
               value="upload"
@@ -214,7 +222,10 @@ export default function SummarizePage() {
                 <input
                   type="file"
                   accept="application/pdf,.pdf"
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  onChange={(e) => {
+                    setFile(e.target.files?.[0] || null)
+                    setSummary(null)
+                  }}
                   className="absolute inset-0 opacity-0 cursor-pointer"
                   aria-label="Upload PDF"
                 />
@@ -252,6 +263,7 @@ export default function SummarizePage() {
                     onClick={(e) => {
                       e.stopPropagation()
                       setFile(null)
+                      setSummary(null)
                     }}
                     aria-label="Remove file"
                   >
@@ -294,7 +306,13 @@ export default function SummarizePage() {
                 <Label htmlFor="stored-doc" className="text-sm">
                   Document
                 </Label>
-                <Select value={selectedDoc} onValueChange={setSelectedDoc}>
+                <Select
+                  value={selectedDoc}
+                  onValueChange={(value) => {
+                    setSelectedDoc(value)
+                    setSummary(null)
+                  }}
+                >
                   <SelectTrigger
                     id="stored-doc"
                     className="bg-input border-border"

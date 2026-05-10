@@ -33,6 +33,21 @@ app = FastAPI(
     version="1.0",
 )
 
+# Allow cross-origin requests from the frontend
+# Without this, the browser blocks requests from Vercel to Railway
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://quantum-rag-ai-tutor.vercel.app",  # production frontend on Vercel
+        "http://localhost:3000",                      # local development
+    ],
+    allow_credentials=True,   # allow cookies and auth headers
+    allow_methods=["*"],      # allow GET, POST, etc.
+    allow_headers=["*"],      # allow all headers
+)
+
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 

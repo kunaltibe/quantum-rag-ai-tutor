@@ -84,10 +84,14 @@ export default function SummarizePage() {
       toast.error("Please select a PDF file first.")
       return
     }
+    // The SelectItem value is already file_name, but look up the publication
+    // explicitly to guarantee we send file_name (not document_title) as document_name.
+    const pub = publications.find((p) => p.file_name === selectedDoc)
+    const documentName = pub?.file_name ?? selectedDoc
     setLoading(true)
     setSummary(null)
     try {
-      const res = await summarizeUpload(file, uploadTopic.trim())
+      const res = await summarizeStored(documentName, storedTopic.trim())
       setSummary(res)
     } catch (err) {
       toast.error(getApiErrorMessage(err))

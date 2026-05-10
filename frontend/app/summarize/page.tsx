@@ -80,18 +80,17 @@ export default function SummarizePage() {
   }, [])
 
   async function handleUploadSummarize() {
+    // Hard guard: only run when the upload tab is active.
+    if (tab !== "upload") return
     if (!file) {
       toast.error("Please select a PDF file first.")
       return
     }
-    // The SelectItem value is already file_name, but look up the publication
-    // explicitly to guarantee we send file_name (not document_title) as document_name.
-    const pub = publications.find((p) => p.file_name === selectedDoc)
-    const documentName = pub?.file_name ?? selectedDoc
     setLoading(true)
     setSummary(null)
     try {
-      const res = await summarizeStored(documentName, storedTopic.trim())
+      // Multipart POST to /summarize-pdf/
+      const res = await summarizeUpload(file, uploadTopic.trim())
       setSummary(res)
     } catch (err) {
       toast.error(getApiErrorMessage(err))
@@ -101,6 +100,8 @@ export default function SummarizePage() {
   }
 
   async function handleStoredSummarize() {
+    // Hard guard: only run when the stored tab is active.
+    if (tab !== "stored") return
     if (!selectedDoc) {
       toast.error("Please select a document.")
       return

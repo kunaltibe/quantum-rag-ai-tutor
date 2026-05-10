@@ -48,10 +48,11 @@ export async function fetchPublications(): Promise<Publication[]> {
 }
 
 export async function askQuestion(query: string, contextId: string): Promise<QAResponse> {
-  const res = await api.post<QAResponse>("/qa-pdf/", {
-    query,
-    context_id: contextId,
-  })
+  const res = await api.post<QAResponse>(
+    "/qa-pdf/",
+    { query, context_id: contextId },
+    { headers: { "Content-Type": "application/json" } },
+  )
   return res.data
 }
 
@@ -59,10 +60,11 @@ export async function summarizeStored(
   documentName: string,
   topic: string,
 ): Promise<SummaryResponse> {
-  const res = await api.post<SummaryResponse>("/summarize-document/", {
-    document_name: documentName,
-    chapter_query: topic,
-  })
+  const res = await api.post<SummaryResponse>(
+    "/summarize-document/",
+    { document_name: documentName, chapter_query: topic },
+    { headers: { "Content-Type": "application/json" } },
+  )
   return res.data
 }
 
@@ -73,9 +75,9 @@ export async function summarizeUpload(
   const formData = new FormData()
   formData.append("file", file)
   formData.append("topic", topic)
-  const res = await api.post<SummaryResponse>("/summarize-pdf/", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  })
+  // Do NOT set Content-Type manually for FormData — the browser/axios will
+  // set "multipart/form-data; boundary=..." automatically.
+  const res = await api.post<SummaryResponse>("/summarize-pdf/", formData)
   return res.data
 }
 

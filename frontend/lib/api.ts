@@ -59,9 +59,9 @@ export async function summarizeStored(
   documentName: string,
   topic: string,
 ): Promise<SummaryResponse> {
-  const res = await api.post<SummaryResponse>("/summarize-pdf/", {
+  const res = await api.post<SummaryResponse>("/summarize-document/", {
     document_name: documentName,
-    topic,
+    chapter_query: topic,
   })
   return res.data
 }
